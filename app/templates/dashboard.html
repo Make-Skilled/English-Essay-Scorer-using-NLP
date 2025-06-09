@@ -15,6 +15,39 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        .score-bar {
+            position: relative;
+            overflow: hidden;
+        }
+        .score-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .feedback-card {
+            transition: all 0.2s ease;
+        }
+        .feedback-card:hover {
+            transform: translateX(4px);
+            background-color: #f1f5f9;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -26,34 +59,34 @@
                     <a href="/" class="text-2xl font-bold gradient-text">EssayScorer</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-500 hover:text-gray-700">Home</a>
-                    <a href="/dashboard" class="text-indigo-600">Dashboard</a>
+                    <a href="/" class="text-gray-500 hover:text-gray-700 transition-colors">Home</a>
+                    <a href="/dashboard" class="text-indigo-600 font-medium">Dashboard</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Essay Input Section -->
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Submit Your Essay</h2>
-                    <form id="essayForm" class="space-y-4">
+                <div class="card rounded-xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Submit Your Essay</h2>
+                    <form id="essayForm" class="space-y-6">
                         <div>
-                            <label for="essay" class="block text-sm font-medium text-gray-700">Your Essay</label>
+                            <label for="essay" class="block text-sm font-medium text-gray-700 mb-2">Your Essay</label>
                             <textarea
                                 id="essay"
                                 name="essay"
                                 rows="12"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition-colors"
                                 placeholder="Paste your essay here..."
                             ></textarea>
                         </div>
                         <button
                             type="submit"
-                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
                         >
                             Analyze Essay
                         </button>
@@ -61,58 +94,58 @@
                 </div>
 
                 <!-- Results Section -->
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Analysis Results</h2>
+                <div class="card rounded-xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Analysis Results</h2>
                     <div id="loading" class="hidden">
-                        <div class="flex items-center justify-center">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                            <span class="ml-2 text-gray-600">Analyzing...</span>
+                        <div class="flex items-center justify-center py-8">
+                            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                            <span class="ml-3 text-gray-600 font-medium">Analyzing...</span>
                         </div>
                     </div>
                     <div id="results" class="hidden">
                         <!-- Overall Score -->
-                        <div class="mb-8">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-gray-600">Overall Score</span>
-                                <span id="overallScore" class="text-2xl font-bold text-indigo-600">0%</span>
+                        <div class="mb-10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-700 font-medium">Overall Score</span>
+                                <span id="overallScore" class="text-3xl font-bold text-indigo-600">0%</span>
                             </div>
-                            <div class="w-full bg-gray-200 rounded-full h-4">
-                                <div id="overallScoreBar" class="bg-indigo-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            <div class="w-full bg-gray-100 rounded-full h-5 overflow-hidden">
+                                <div id="overallScoreBar" class="score-bar bg-gradient-to-r from-indigo-500 to-indigo-600 h-5 rounded-full transition-all duration-1000" style="width: 0%"></div>
                             </div>
                         </div>
 
                         <!-- Category Scores -->
-                        <div class="space-y-6 mb-8">
+                        <div class="space-y-8 mb-10">
                             <!-- Grammar Analysis -->
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-600">Grammar Analysis</span>
-                                    <span id="grammarScore" class="font-semibold">0%</span>
+                                    <span class="text-gray-700 font-medium">Grammar Analysis</span>
+                                    <span id="grammarScore" class="font-semibold text-green-600">0%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div id="grammarScoreBar" class="bg-green-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                                    <div id="grammarScoreBar" class="score-bar bg-gradient-to-r from-green-400 to-green-500 h-3 rounded-full transition-all duration-1000" style="width: 0%"></div>
                                 </div>
                             </div>
 
                             <!-- Vocabulary Assessment -->
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-600">Vocabulary Assessment</span>
-                                    <span id="vocabularyScore" class="font-semibold">0%</span>
+                                    <span class="text-gray-700 font-medium">Vocabulary Assessment</span>
+                                    <span id="vocabularyScore" class="font-semibold text-blue-600">0%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div id="vocabularyScoreBar" class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                                    <div id="vocabularyScoreBar" class="score-bar bg-gradient-to-r from-blue-400 to-blue-500 h-3 rounded-full transition-all duration-1000" style="width: 0%"></div>
                                 </div>
                             </div>
 
                             <!-- Structure Analysis -->
                             <div>
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="text-gray-600">Structure Analysis</span>
-                                    <span id="structureScore" class="font-semibold">0%</span>
+                                    <span class="text-gray-700 font-medium">Structure Analysis</span>
+                                    <span id="structureScore" class="font-semibold text-purple-600">0%</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div id="structureScoreBar" class="bg-purple-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                                    <div id="structureScoreBar" class="score-bar bg-gradient-to-r from-purple-400 to-purple-500 h-3 rounded-full transition-all duration-1000" style="width: 0%"></div>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +153,7 @@
                         <!-- Detailed Feedback -->
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-4">Detailed Feedback</h3>
-                            <div id="feedbackList" class="space-y-3">
+                            <div id="feedbackList" class="space-y-4">
                                 <!-- Feedback items will be inserted here -->
                             </div>
                         </div>
@@ -182,20 +215,20 @@
                     const feedbackList = document.getElementById('feedbackList');
                     if (data.feedback && data.feedback.length > 0) {
                         feedbackList.innerHTML = data.feedback.map(item => `
-                            <div class="flex items-start p-3 bg-gray-50 rounded-lg">
-                                <svg class="w-5 h-5 text-indigo-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="feedback-card flex items-start p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                <svg class="w-5 h-5 text-indigo-500 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span class="text-gray-600">${item}</span>
+                                <span class="text-gray-700">${item}</span>
                             </div>
                         `).join('');
                     } else {
                         feedbackList.innerHTML = `
-                            <div class="flex items-start p-3 bg-gray-50 rounded-lg">
-                                <svg class="w-5 h-5 text-green-500 mr-2 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="feedback-card flex items-start p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
+                                <svg class="w-5 h-5 text-green-500 mr-3 mt-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
-                                <span class="text-gray-600">Great job! Your essay looks good.</span>
+                                <span class="text-gray-700">Great job! Your essay looks good.</span>
                             </div>
                         `;
                     }
@@ -204,8 +237,8 @@
                     document.getElementById('results').classList.remove('hidden');
                     // Add a small delay to ensure the DOM is updated before animating
                     setTimeout(() => {
-                        document.querySelectorAll('.rounded-full').forEach(bar => {
-                            bar.style.transition = 'width 1s ease-in-out';
+                        document.querySelectorAll('.score-bar').forEach(bar => {
+                            bar.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
                         });
                     }, 100);
                 } else {
