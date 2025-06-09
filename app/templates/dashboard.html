@@ -107,7 +107,10 @@
                         <div class="mb-10">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-gray-700 font-medium">Overall Score</span>
-                                <span id="overallScore" class="text-3xl font-bold text-indigo-600">0%</span>
+                                <div class="text-right">
+                                    <span id="overallScore" class="text-3xl font-bold text-indigo-600">0%</span>
+                                    <span id="overallScoreOutOf100" class="block text-sm text-gray-500">(0/100)</span>
+                                </div>
                             </div>
                             <div class="w-full bg-gray-100 rounded-full h-5 overflow-hidden">
                                 <div id="overallScoreBar" class="score-bar bg-gradient-to-r from-indigo-500 to-indigo-600 h-5 rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -191,9 +194,12 @@
                 if (response.ok) {
                     // Update overall score
                     const overallScore = document.getElementById('overallScore');
+                    const overallScoreOutOf100 = document.getElementById('overallScoreOutOf100');
                     const overallScoreBar = document.getElementById('overallScoreBar');
-                    overallScore.textContent = `${data.score}%`;
-                    overallScoreBar.style.width = `${data.score}%`;
+                    const scoreValue = Math.round(data.score);
+                    overallScore.textContent = `${scoreValue}%`;
+                    overallScoreOutOf100.textContent = `(${scoreValue}/100)`;
+                    overallScoreBar.style.width = `${scoreValue}%`;
 
                     // Update category scores
                     const grammarScore = document.getElementById('grammarScore');
